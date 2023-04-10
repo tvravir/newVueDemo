@@ -3,70 +3,76 @@ import Home from './components/pages/Home';
 import Dashboard from './components/pages/Dashboard';
 import Posts from './components/pages/Posts';
 import About from './components/pages/About';
+import NotFound from './components/pages/Not-found';
 import singlePost from './components/pages/Single-post';
 import Login from './components/pages/auth/Login';
 import Register from './components/pages/auth/Register';
 
 
-
 function guardMyroute(to, from, next) {
-    var isAuthenticated = false;
-    if (localStorage.getItem('currentuser'))
-        isAuthenticated = true;
-    else
-        isAuthenticated = false;
-    if (isAuthenticated) {
-        next(); // allow to enter route
-    }
-    else {
-        next('/login'); // go to '/login';
-    }
+  var isAuthenticated = false;
+  if (localStorage.getItem('currentuser'))
+    isAuthenticated = true;
+  else
+    isAuthenticated = false;
+  if (isAuthenticated) {
+    next(); // allow to enter route
+  }
+  else {
+    next('/login'); // go to '/login';
+  }
 }
 const router = createRouter({
-    history: createWebHistory(),
-    routes: [{
-        name: 'home',
-        path: '/',
-        component: Home,
-        beforeEnter: guardMyroute,
-        redirect: 'dashboard',
-        // sensitive: true,
-        // redirect: 'login'
-        children: [
-            {
-                name: 'dashboard',
-                component: Dashboard,
-                path: '/dashboard',
-            },
-            {
-                name: 'posts',
-                component: Posts,
-                path: '/posts',
-            },
-            {
-                name: "single-post",
-                component: singlePost,
-                path: '/posts/:id'
-            },
-            {
-                name: 'about',
-                component: About,
-                path: '/about',
-            },
-        ]
+  history: createWebHistory(),
+  routes: [{
+    name: 'home',
+    path: '/',
+    component: Home,
+    beforeEnter: guardMyroute,
+    redirect: 'dashboard',
+    // sensitive: true,
+    // redirect: 'login'
+    children: [
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard,
+      },
+      {
+        path: '/posts',
+        name: 'posts',
+        component: Posts,
 
-    },
-    {
-        name: 'login',
-        component: Login,
-        path: '/login',
-    },
-    {
-        name: 'register',
-        component: Register,
-        path: '/register',
-    },
+      },
+      {
+        path: '/posts/:id',
+        name: "single-post",
+        component: singlePost,
+      },
+      {
+        path: '/about',
+        name: 'about',
+        component: About,
+      },
     ]
+
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound
+  },
+  ]
 })
 
 
