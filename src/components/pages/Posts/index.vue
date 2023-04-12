@@ -55,25 +55,26 @@ export default {
     this.getAllPosts()
   },
   methods: {
-    getAllPosts(page) {
+    getAllPosts(page = 1) {
+      console.log(page);
       // console.log(exios);
       // if (!localStorage.getItem('all-posts')) {
       // let responce = await axios.get('https://jsonplaceholder.typicode.com/posts')
-      let apiUrl =
-        axios.get('https://dummyjson.com/products?limit=10')
-          .then((responce) => {
-            if (responce && responce.status == 200) {
-              console.log(responce.data);
-              this.allPostsResp = responce.data
-              this.allPosts = responce.data.products
-              localStorage.setItem('all-posts', JSON.stringify(this.allPosts))
-              this.getAllCategory();
-              this.beforeFilterAllPosts = this.allPosts
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          })
+      // let apiUrl =
+      axios.get('https://dummyjson.com/products?limit=10')
+        .then((responce) => {
+          if (responce && responce.status == 200) {
+            console.log(responce.data);
+            this.allPostsResp = responce.data
+            this.allPosts = responce.data.products
+            localStorage.setItem('all-posts', JSON.stringify(this.allPosts))
+            this.getAllCategory();
+            this.beforeFilterAllPosts = this.allPosts
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
       // } else {
       //   this.allPosts = JSON.parse(localStorage.getItem('all-posts'))
       //   this.beforeFilterAllPosts = this.allPosts
