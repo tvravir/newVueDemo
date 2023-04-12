@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- <div class="">
+
+    </div> -->
     <!-- <vue-router></vue-router> -->
     <div class="xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 grid">
       <!-- <Header /> -->
@@ -25,39 +28,100 @@
         </div>
       </div>
     </div>
+    <VueAwesomePaginate :total-items="allPostsResp.total" :items-per-page="10" :max-pages-shown="5" v-model="currentPage"
+      :on-click="onClickHandler" />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { VueAwesomePaginate } from 'vue-awesome-paginate';
 export default {
   name: 'posts-page',
+  components: {
+    VueAwesomePaginate
+  },
   data() {
     return {
-      allPosts: []
+      allPostsResp: {
+      },
+      allPosts: [],
+      beforeFilterAllPosts: [],
+      allCategories: [],
+      currentPage: 1
     }
   },
   mounted() {
     this.getAllPosts()
   },
   methods: {
-    async getAllPosts() {
+    getAllPosts() {
       // console.log(exios);
-      if (!localStorage.getItem('all-posts')) {
-        // let responce = await axios.get('https://jsonplaceholder.typicode.com/posts')
-        let responce = await axios.get('https://dummyjson.com/products')
-        if (responce && responce.status == 200) {
-          console.log(responce.data);
-          this.allPosts = responce.data.products
-          localStorage.setItem('all-posts', JSON.stringify(this.allPosts))
+      // if (!localStorage.getItem('all-posts')) {
+      // let responce = await axios.get('https://jsonplaceholder.typicode.com/posts')
+      axios.get('https://dummyjson.com/products?limit=10')
+        .then((responce) => {
+          if (responce && responce.status == 200) {
+            console.log(responce.data);
+            this.allPostsResp = responce.data
+            this.allPosts = responce.data.products
+            localStorage.setItem('all-posts', JSON.stringify(this.allPosts))
+            this.getAllCategory();
+            this.beforeFilterAllPosts = this.allPosts
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      // } else {
+      //   this.allPosts = JSON.parse(localStorage.getItem('all-posts'))
+      //   this.beforeFilterAllPosts = this.allPosts
+      //   console.log(this.allPosts);
+      //   this.getAllCategory();
+      // }
+    },
+    getAllCategory() {
+      this.allPosts.forEach((e) => {
+        if (this.allCategories.indexOf(e.category) == -1) {
+          this.allCategories.push(e.category)
         }
-      } else {
-        this.allPosts = JSON.parse(localStorage.getItem('all-posts'))
-        console.log(this.allPosts);
-      }
+      })
+      console.log(this.allCategories);
+    },
+    onClickHandler(page) {
+      console.log(page);
     }
   }
 }
 </script>
 
-<style scoped></style>
+<style >
+.pagination-container {
+  display: flex;
+  column-gap: 10px;
+}
+
+.paginate-buttons {
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: rgb(242, 242, 242);
+  border: 1px solid rgb(217, 217, 217);
+  color: black;
+}
+
+.paginate-buttons:hover {
+  background-color: #d8d8d8;
+}
+
+.active-page {
+  background-color: #3498db;
+  border: 1px solid #3498db;
+  color: white;
+}
+
+.active-page:hover {
+  background-color: #2988c8;
+}
+</style>

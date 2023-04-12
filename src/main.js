@@ -4,6 +4,7 @@ import App from './App.vue'
 import '../public/index.css'
 import routes from './app-routes'
 import VueEasyLightbox from 'vue-easy-lightbox'
-// Vue.config.productionTip = false
+import { vfmPlugin } from 'vue-final-modal'
+import VueAwesomePaginate from "vue-awesome-paginate";
 
-createApp(App).use(routes, VueEasyLightbox).mount('#app')
+createApp(App).use(routes, VueEasyLightbox, vfmPlugin, VueAwesomePaginate).mount('#app')

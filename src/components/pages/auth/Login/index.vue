@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full flex items-center justify-center bg-slate-50">
     <div class="min-w-[400px] w-24 p-6 rounded-2xl shadow-md bg-white">
-      <form @submit="submitForm">
+      <form @submit.prevent="submitForm">
         <div class="flex items-center mb-2">
           <div class="h-8 w-8 mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="48" height="48" viewBox="0 0 48 48"
@@ -19,15 +19,15 @@
           Welcome, Login to your accout
         </h2>
         <div class="text-red-800 bg-red-200 border border-red-800 py-2 px-3 mb-4 animate-pulse duration-100"
-          v-if="errordata && errordata.somwthingWrong">
-          {{ errordata.somwthingWrong }}
+          v-if="errordata && errordata.message">
+          {{ errordata.message }}
         </div>
         <div class="mb-4">
-          <label class="block text-sm font-bold text-[0.8125rem] mb-0.5 invalid:text-red-800" for="email">
-            Email</label>
-          <input type="email" v-model.trim="loginFormdata.email"
-            class="focus:outline-none border rounded-md w-full h-10 px-2 text-[0.8125rem]" id="email"
-            @keypress="errordata = {}" placeholder="Email" required>
+          <label class="block text-sm font-bold text-[0.8125rem] mb-0.5 invalid:text-red-800" for="userName">
+            User Name</label>
+          <input type="text" v-model.trim="loginFormdata.email"
+            class="focus:outline-none border rounded-md w-full h-10 px-2 text-[0.8125rem]" id="userName"
+            @keypress="errordata = {}" placeholder="User name" required>
           <p class="text-red-700 text-[0.8125rem]" v-if="errordata && errordata.email">
             {{ errordata.email }}
           </p>
@@ -43,8 +43,8 @@
           </p>
         </div>
         <div class="mb-8">
-          <button
-            class="pointer-events-auto rounded-md bg-indigo-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 w-full">
+          <button :disabled="loader"
+            class="pointer-events-auto rounded-md bg-indigo-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 w-full disabled:bg-slate-400 ">
             login
           </button>
         </div>
@@ -60,6 +60,7 @@
 
 <script>
 import router from '../../../../app-routes';
+import axios from 'axios';
 export default {
   name: 'login-page',
   data() {
@@ -68,28 +69,29 @@ export default {
         email: '',
         password: '',
       },
-      userList: [],
-      errordata: {}
+      // userList: [],
+      errordata: {},
+      loader: false
 
     }
   },
   created() {
-    this.getLocalStorageData()
+    // this.getLocalStorageData()
   },
   methods: {
-    getLocalStorageData() {
-      if (JSON.parse(localStorage.getItem('userList'))) {
-        this.userList = JSON.parse(localStorage.getItem('userList'));
-      } else {
-        this.setLocalStorageData()
-      }
-    },
+    // getLocalStorageData() {
+    //   if (JSON.parse(localStorage.getItem('userList'))) {
+    //     this.userList = JSON.parse(localStorage.getItem('userList'));
+    //   } else {
+    //     this.setLocalStorageData()
+    //   }
+    // },
 
-    setLocalStorageData() {
-      localStorage.setItem('userList', JSON.stringify(this.userList));
-    },
-    submitForm(event) {
-      event.preventDefault();
+    // setLocalStorageData() {
+    //   localStorage.setItem('userList', JSON.stringify(this.userList));
+    // },
+    submitForm() {
+      // event.preventDefault();
       // if (this.loginFormdata.email == '') {
       //     this.errordata.email = 'Please enter Email.'
       //     return;
@@ -104,36 +106,61 @@ export default {
       // }
 
 
-      if (this.userList.length > 0) {
-        // if (this.userList.filter(data => data.email == this.loginFormdata.email).length != 0) {
-        //     this.errordata.email = 'this email is already exist.'
-        //     return;
-        // } else {
-        //     this.errordata = {};
-        // }
-        // this.userList.forEach((element) => {
+      // if (this.userList.length > 0) {
+      //   // if (this.userList.filter(data => data.email == this.loginFormdata.email).length != 0) {
+      //   //     this.errordata.email = 'this email is already exist.'
+      //   //     return;
+      //   // } else {
+      //   //     this.errordata = {};
+      //   // }
+      //   // this.userList.forEach((element) => {
 
-        //     if (element.email == this.loginFormdata.email && element.password == this.loginFormdata.password) {
-        //         localStorage.setItem('currentuser', JSON.stringify(element))
-        //     }
-        // })
-        let obj = this.userList.find(o =>
-          (o.email === this.loginFormdata.email) && (o.password === this.loginFormdata.password)
-        );
-        // console.log(obj);
-        if (obj) {
-          localStorage.setItem('currentuser', JSON.stringify(obj))
-          this.errordata = {};
-          router.push({ path: '/' })
+      //   //     if (element.email == this.loginFormdata.email && element.password == this.loginFormdata.password) {
+      //   //         localStorage.setItem('currentuser', JSON.stringify(element))
+      //   //     }
+      //   // })
+      //   let obj = this.userList.find(o =>
+      //     (o.email === this.loginFormdata.email) && (o.password === this.loginFormdata.password)
+      //   );
+      //   // console.log(obj);
+      //   if (obj) {
+      //     localStorage.setItem('currentuser', JSON.stringify(obj))
+      //     this.errordata = {};
+      //     router.push({ path: '/' })
 
-        } else {
-          this.errordata.somwthingWrong = 'Wrong email or password.';
-        }
-      } else {
-        this.errordata.somwthingWrong = 'Wrong email or password.';
-      }
+      //   } else {
+      //     this.errordata.somwthingWrong = 'Wrong email or password.';
+      //   }
+      // } else {
+      //   this.errordata.somwthingWrong = 'Wrong email or password.';
+      // }
       // this.userList.push(this.loginFormdata)
       // this.setLocalStorageData();
+      let data = {
+        // method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          username: this.loginFormdata.email,//'kminchelle',
+          password: this.loginFormdata.password//'0lelplR',
+          // expiresInMins: 60, // optional
+        }
+      }
+      this.loader = true
+      axios.post('https://dummyjson.com/auth/login', data.body, data.headers)
+        .then((responce) => {
+          console.log(responce);
+          if (responce && responce.status == 200) {
+            localStorage.setItem('currentuser', JSON.stringify(responce.data))
+            this.errordata = {};
+            router.push({ path: '/' })
+            this.loader = false
+          }
+        })
+        .catch(error => {
+          this.errordata = error.response.data
+          this.loader = false
+          // console.error(error)
+        })
     }
 
   }

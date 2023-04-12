@@ -7,6 +7,7 @@ import NotFound from './components/pages/Not-found';
 import singlePost from './components/pages/Single-post';
 import Login from './components/pages/auth/Login';
 import Register from './components/pages/auth/Register';
+import Calendar from './components/pages/Calendar'
 
 
 function guardMyroute(to, from, next) {
@@ -53,6 +54,11 @@ const router = createRouter({
         path: '/about',
         name: 'about',
         component: About,
+      },
+      {
+        path: '/calendar',
+        name: 'calendar',
+        component: Calendar,
       },
     ]
 
