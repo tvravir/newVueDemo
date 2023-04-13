@@ -1,15 +1,16 @@
 <template>
   <div>
-    <div v-if="fload" class="h-full w-full">
+    <!-- <div v-if="fload" class="h-full w-full">
 
-    </div>
+    </div> -->
     <div class="" v-if="!fload">
-      <!-- <div class="flex mt-2 mb-6">
+      <div class="flex mt-2 mb-6">
         <button
-          class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5  text-white bg-indigo-600 ml-auto hover:opacity-90">
+          class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5  text-white bg-indigo-600 ml-auto hover:opacity-90"
+          @click="openProductModal(null)">
           Add Product
         </button>
-      </div> -->
+      </div>
       <div class="xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 grid">
         <!-- <Header /> -->
         <div class="shadow-md rounded-lg bg-white flex flex-col overflow-hidden " v-for="post in allPosts" :key="post.id">
@@ -30,6 +31,14 @@
                 class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
                 Details
               </router-link>
+              <button @click="openProductModal(post)"
+                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
+                Edit Product
+              </button>
+              <button @click="openDeleteModal(post)"
+                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
+                Delete Product
+              </button>
             </div>
           </div>
         </div>
@@ -39,6 +48,11 @@
         <Pagination :totalPages="allPostsResp.total / 10" :perPage="10" :maxVisibleButtons="5" :currentPage="currentPage"
           @pagechanged="onPageChange" />
       </div>
+      <productModal v-model="addProductModal" :title="modalTitle" :productDetails="editModalDetail"
+        @confirm="submitModal" />
+      <DeleteProductModal v-model="deleteModal" title="Delte Product" @confirm="submitDelteModal">
+        Are You really Want to delete this product?
+      </DeleteProductModal>
     </div>
 
 
@@ -47,12 +61,16 @@
 
 <script>
 import axios from 'axios';
-
+import productModal from '../modal/productModal.vue';
 import Pagination from '../common/pagination'
+import DeleteProductModal from '../modal/deleteProductModal.vue'
+
 export default {
   name: 'posts-page',
   components: {
-    Pagination
+    Pagination,
+    productModal,
+    DeleteProductModal
   },
   data() {
     return {
@@ -64,14 +82,18 @@ export default {
       currentPage: 1,
       postLoader: false,
       fload: true,
+      addProductModal: false,
+      deleteModal: false,
+      modalTitle: '',
+      editModalDetail: null
     }
   },
   mounted() {
-    this.getAllPosts()
+    this.getAllProducts()
   },
   methods: {
-    getAllPosts(page = 1) {
-      console.log(page);
+    getAllProducts(page = 1) {
+      // console.log(page);
       this.postLoader = true
 
       // let responce = await axios.get('https://jsonplaceholder.typicode.com/posts')
@@ -104,9 +126,58 @@ export default {
       console.log(this.allCategories);
     },
     onPageChange(page) {
-      console.log(page)
+      // console.log(page)
       this.currentPage = page;
-      this.getAllPosts(this.currentPage)
+      this.getAllProducts(this.currentPage)
+    },
+    openProductModal(editDetail = null) {
+      // console.log(editDetail);
+      this.editModalDetail = editDetail
+      this.addProductModal = true
+      this.modalTitle = "Add product"
+      // this.$modal.show(
+      //   productModal
+      // )
+      // useModal({
+      //   component: productModal
+      // })
+
+
+    },
+    submitModal(event) {
+      this.fload = true;
+      this.$nextTick(() => {
+        this.fload = false;
+      });
+      console.log(event);
+      this.addProductModal = false
+      let ind = this.allPosts.findIndex(e => e.id == event.id)
+      this.allPosts[ind] = event
+
+      // this.allPosts.spli ce(ind, 1, event)
+      console.log(this.allPosts);
+
+      // if (event.type == 'add') {
+      //   this.addProduct(event.formData)
+      // } else if (event.type == 'update') {
+      //   this.updateProduct(event.formData)
+      // }
+
+
+    },
+    addProduct(formData) {
+      console.log('add', formData);
+    },
+    updateProduct(formdata) {
+      console.log('update', formdata);
+    },
+    submitDelteModal() {
+
+      this.deleteModal = false
+      this.allPosts.splice(this.allPosts.findIndex(e => e.id == this.selecteddeleteModal.id), 1)
+    }, openDeleteModal(product) {
+      this.selecteddeleteModal = product
+      this.deleteModal = true
     }
   }
 }
