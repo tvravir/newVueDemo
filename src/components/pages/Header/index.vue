@@ -32,8 +32,8 @@
 								<router-link to="/dashboard"
 									class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Dashboard</router-link>
 
-								<router-link to="/posts"
-									class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Posts</router-link>
+								<router-link to="/products"
+									class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Products</router-link>
 
 								<!-- <router-link to="/users"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Users</router-link> -->

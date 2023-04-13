@@ -1,10 +1,10 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import Home from './components/pages/Home';
 import Dashboard from './components/pages/Dashboard';
-import Posts from './components/pages/Posts';
+import Products from './components/pages/Products';
 import About from './components/pages/About';
 import NotFound from './components/pages/Not-found';
-import singlePost from './components/pages/Single-post';
+import productDetail from './components/pages/Product-detail';
 import Login from './components/pages/auth/Login';
 import Register from './components/pages/auth/Register';
 import Calendar from './components/pages/Calendar'
@@ -40,15 +40,15 @@ const router = createRouter({
         component: Dashboard,
       },
       {
-        path: '/posts',
-        name: 'posts',
-        component: Posts,
+        path: '/products',
+        name: 'Products',
+        component: Products,
 
       },
       {
-        path: '/posts/:id',
-        name: "single-post",
-        component: singlePost,
+        path: '/products/:id',
+        name: "Product-details",
+        component: productDetail,
       },
       {
         path: '/about',

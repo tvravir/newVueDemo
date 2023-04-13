@@ -137,16 +137,13 @@ export default {
       // this.userList.push(this.loginFormdata)
       // this.setLocalStorageData();
       let data = {
-        // method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: {
-          username: this.loginFormdata.email,//'kminchelle',
-          password: this.loginFormdata.password//'0lelplR',
-          // expiresInMins: 60, // optional
-        }
+        username: this.loginFormdata.email,//'kminchelle',
+        password: this.loginFormdata.password//'0lelplR',
+        // expiresInMins: 60, // optional
+
       }
       this.loader = true
-      axios.post('https://dummyjson.com/auth/login', data.body, data.headers)
+      axios.post('auth/login', data)
         .then((responce) => {
           console.log(responce);
           if (responce && responce.status == 200) {

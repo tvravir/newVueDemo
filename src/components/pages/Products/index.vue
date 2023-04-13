@@ -1,0 +1,117 @@
+<template>
+  <div>
+    <div v-if="fload" class="h-full w-full">
+
+    </div>
+    <div class="" v-if="!fload">
+      <!-- <div class="flex mt-2 mb-6">
+        <button
+          class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5  text-white bg-indigo-600 ml-auto hover:opacity-90">
+          Add Product
+        </button>
+      </div> -->
+      <div class="xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 grid">
+        <!-- <Header /> -->
+        <div class="shadow-md rounded-lg bg-white flex flex-col overflow-hidden " v-for="post in allPosts" :key="post.id">
+          <div class="w-full h-44">
+            <img :src="post.thumbnail" alt="" class="h-full w-full object-cover">
+          </div>
+          <!-- <img src="public/assets/wallapper/wal1.jpg" alt=""> -->
+          <div class="px-3 py-4">
+            <div>
+              <h2 class="truncate text-md font-semibold" :title="post.title">{{ post.title }}</h2>
+              <h2 class="text-xl truncate font-bold" :title="post.price">${{ post.price }}</h2>
+            </div>
+            <p class=" h-[3rem] min-h-[3rem] mb-4 overflow-hidden text-ellipsis line-clamp-3 text-xs">
+              {{ post.description }}
+            </p>
+            <div class="mt-auto flex">
+              <router-link :to='`/products/${post.id}`'
+                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
+                Details
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 mb-4 flex justify-center" :class="postLoader && 'opacity-70 pointer-events-none'">
+        <Pagination :totalPages="allPostsResp.total / 10" :perPage="10" :maxVisibleButtons="5" :currentPage="currentPage"
+          @pagechanged="onPageChange" />
+      </div>
+    </div>
+
+
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+import Pagination from '../common/pagination'
+export default {
+  name: 'posts-page',
+  components: {
+    Pagination
+  },
+  data() {
+    return {
+      allPostsResp: {
+      },
+      allPosts: [],
+      beforeFilterAllPosts: [],
+      allCategories: [],
+      currentPage: 1,
+      postLoader: false,
+      fload: true,
+    }
+  },
+  mounted() {
+    this.getAllPosts()
+  },
+  methods: {
+    getAllPosts(page = 1) {
+      console.log(page);
+      this.postLoader = true
+
+      // let responce = await axios.get('https://jsonplaceholder.typicode.com/posts')
+      let apiUrl = page > 1 ? `products?limit=10&skip=${(page - 1) * 10}` : `products?limit=10`;
+      axios.get(apiUrl)
+        .then((responce) => {
+          this.fload = false
+          this.postLoader = false
+          if (responce && responce.status == 200) {
+            console.log(responce.data);
+            this.allPostsResp = responce.data
+            this.allPosts = responce.data.products
+            localStorage.setItem('all-posts', JSON.stringify(this.allPosts))
+            this.getAllCategory();
+            this.beforeFilterAllPosts = this.allPosts
+          }
+        })
+        .catch((err) => {
+          this.postLoader = false
+          console.log(err);
+        })
+
+    },
+    getAllCategory() {
+      this.allPosts.forEach((e) => {
+        if (this.allCategories.indexOf(e.category) == -1) {
+          this.allCategories.push(e.category)
+        }
+      })
+      console.log(this.allCategories);
+    },
+    onPageChange(page) {
+      console.log(page)
+      this.currentPage = page;
+      this.getAllPosts(this.currentPage)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
