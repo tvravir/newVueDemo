@@ -28,15 +28,15 @@
             </p>
             <div class="mt-auto flex">
               <router-link :to='`/products/${post.id}`'
-                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
+                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600 border mr-0.5">
                 Details
               </router-link>
               <button @click="openProductModal(post)"
-                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
+                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600 border mr-0.5">
                 Edit Product
               </button>
               <button @click="openDeleteModal(post)"
-                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-indigo-600">
+                class="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-red-600 border mr-0.5">
                 Delete Product
               </button>
             </div>
@@ -49,8 +49,9 @@
           @pagechanged="onPageChange" />
       </div>
       <productModal v-model="addProductModal" :title="modalTitle" :productDetails="editModalDetail"
-        @confirm="submitModal" />
-      <DeleteProductModal v-model="deleteModal" title="Delte Product" @confirm="submitDelteModal">
+        @cancle="addProductModal = false" @confirm="submitModal" />
+      <DeleteProductModal v-model="deleteModal" title="Delte Product" @confirm="submitDelteModal"
+        @cancle="deleteModal = false">
         Are You really Want to delete this product?
       </DeleteProductModal>
     </div>
@@ -124,6 +125,15 @@ export default {
         }
       })
       console.log(this.allCategories);
+      let filterdData = []
+      this.allCategories.forEach((e) => {
+        let obj = {
+          title: e,
+          data: this.allPosts.filter(f => f.category == e)
+        }
+        filterdData.push(obj)
+      })
+      console.log('Filterd array of product', filterdData);
     },
     onPageChange(page) {
       // console.log(page)
@@ -134,7 +144,7 @@ export default {
       // console.log(editDetail);
       this.editModalDetail = editDetail
       this.addProductModal = true
-      this.modalTitle = "Add product"
+      this.modalTitle = editDetail ? 'Update product' : "Add product"
       // this.$modal.show(
       //   productModal
       // )
@@ -145,17 +155,19 @@ export default {
 
     },
     submitModal(event) {
-      this.fload = true;
-      this.$nextTick(() => {
-        this.fload = false;
-      });
-      console.log(event);
-      this.addProductModal = false
-      let ind = this.allPosts.findIndex(e => e.id == event.id)
-      this.allPosts[ind] = event
+      if (event) {
+        this.fload = true;
+        this.$nextTick(() => {
+          this.fload = false;
+        });
+        console.log(event);
+        this.addProductModal = false
+        let ind = this.allPosts.findIndex(e => e.id == event.id)
+        this.allPosts[ind] = event
 
-      // this.allPosts.spli ce(ind, 1, event)
-      console.log(this.allPosts);
+        // this.allPosts.spli ce(ind, 1, event)
+        console.log(this.allPosts);
+      }
 
       // if (event.type == 'add') {
       //   this.addProduct(event.formData)
@@ -172,9 +184,13 @@ export default {
       console.log('update', formdata);
     },
     submitDelteModal() {
-
-      this.deleteModal = false
-      this.allPosts.splice(this.allPosts.findIndex(e => e.id == this.selecteddeleteModal.id), 1)
+      axios.delete(`products/${this.selecteddeleteModal.id}`)
+        .then((response) => {
+          if (response && response.status == 200) {
+            this.deleteModal = false
+            this.allPosts.splice(this.allPosts.findIndex(e => e.id == this.selecteddeleteModal.id), 1)
+          }
+        })
     }, openDeleteModal(product) {
       this.selecteddeleteModal = product
       this.deleteModal = true

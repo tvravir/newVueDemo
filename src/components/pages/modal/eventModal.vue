@@ -78,7 +78,7 @@
           <button type="button"
             class="mt-1 border mr-2 pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-gray-500 "
             @click="{ $emit('cancel');eventTitle = '' }">
-            close
+            Cancel
           </button>
           <button type="submit"
             class="mt-1 border pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 bg-indigo-600 text-white border-indigo-600">

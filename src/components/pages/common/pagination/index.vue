@@ -60,7 +60,7 @@ export default {
       // }
 
       // When inbetween
-      return this.currentPage - 1;
+      return this.currentPage;
 
     },
     pages() {
