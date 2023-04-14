@@ -61,6 +61,11 @@
 							<h4 class="text-white text-xl">
 								Hi, {{ userData.username }}
 							</h4>
+							<select v-model="language" :on-select="changelanguages()">
+								<option value="en">English</option>
+								<option value="ja">japan</option>
+							</select>
+							<button class="px-2 mx-2 text-white" @click="changelanguages('ja')">{{ language }}</button>
 							<button @click="logoutUser"
 								class="pointer-events-auto rounded-md bg-red-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-red-500 ml-3">
 								logout
@@ -93,17 +98,28 @@
 </template>
 
 <script>
+// import { mapState, mapActions } from 'vuex';
+// import { I18n } from '../../../i18n';
 export default {
 	name: 'header-section',
+	computed: {
+		// ...mapState({
+		// 	language: (state) => { console.log(state); return state.lang }
+		// }),
+	},
 	data() {
 		return {
-			userData: {}
+			userData: {},
+			language: 'en'
 		}
 	},
 	created() {
 		this.getCurrentuser()
 	},
 	methods: {
+		// ...mapActions({
+		// 	changelang: 'changeLanguage'
+		// }),
 		getCurrentuser() {
 			// currentUser
 			if (localStorage.getItem('currentuser')) {
@@ -115,9 +131,16 @@ export default {
 			this.userData = {};
 			localStorage.removeItem('currentuser');
 			this.$router.push({ path: '/login' });
+		},
+		changelanguages(event) {
+			console.log(event);
+			// this.changelang('ja')
+			// console.log(event.target.value);
+			// I18n.global.local = 'ja'
 		}
 
-	}
+	},
+
 }
 </script>
 

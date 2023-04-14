@@ -6,12 +6,26 @@
       {{ title }}
     </h1>
     <form @submit.prevent="submitevent">
-      <div>
+      <div class="mb-3">
         <label class="block text-sm font-bold text-[0.8125rem] mb-0.5 invalid:text-red-800" for="title">
           Product Title</label>
         <input type="text" v-model.trim="productForm.title" required
           class="focus:outline-none border rounded-md w-full h-10 px-2 text-[0.8125rem]" id="title"
           placeholder="Product title">
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm font-bold text-[0.8125rem] mb-0.5 invalid:text-red-800" for="description">
+          Product Description</label>
+        <input type="text" v-model.trim="productForm.description" required
+          class="focus:outline-none border rounded-md w-full h-10 px-2 text-[0.8125rem]" id="description"
+          placeholder="Product description">
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm font-bold text-[0.8125rem] mb-0.5 invalid:text-red-800" for="price">
+          Product Price</label>
+        <input type="text" v-model.trim="productForm.price" required
+          class="focus:outline-none border rounded-md w-full h-10 px-2 text-[0.8125rem]" id="price"
+          placeholder="Product Price">
       </div>
       <div class="flex items-center justify-end mt-[15px_!important]">
         <button @click="$emit('cancle')" type="button"
@@ -36,7 +50,9 @@ export default {
     return {
       isUpdate: false,
       productForm: {
-        title: ''
+        title: '',
+        price: '',
+        description: ''
       }
     }
   },
@@ -82,7 +98,9 @@ export default {
     },
     editProduct() {
       let data = {
-        title: this.productForm.title
+        title: this.productForm.title,
+        description: this.productForm.description,
+        price: Number(this.productForm.price),
       }
       axios.put(`/products/${this.productDetails.id}`, data).then((resp) => {
         if (resp && resp.status == 200) {
@@ -92,7 +110,9 @@ export default {
     },
     addProduct() {
       let data = {
-        title: this.productForm.title
+        title: this.productForm.title,
+        description: this.productForm.description,
+        price: Number(this.productForm.price),
       }
       axios.post(`/products/add`, data).then((resp) => {
         if (resp && resp.status == 200) {
@@ -106,9 +126,11 @@ export default {
     productDetails(newVal) {
       // console.log("check Update", this.getProductDetail);
       // console.log("check Update", oldValue);
-      // console.log(newVal);
+      console.log(newVal);
       if (newVal) {
         this.productForm.title = newVal.title
+        this.productForm.description = newVal.description
+        this.productForm.price = newVal.price
       }
       if (!this.getProductDetail) {
         this.productForm.title = ''
@@ -119,6 +141,8 @@ export default {
       // console.log('Old Val', oldVal);
       if (newVal == 'Add product') {
         this.productForm.title = ''
+        this.productForm.description = ''
+        this.productForm.price = ''
       }
     }
   },
