@@ -10,14 +10,11 @@ const store = createStore({
   state() {
     // ?=====> Declare Variable
     return {
-      lang: 'en'
+
     }
   },
   mutations: {
     // ?=====> Declare Function to Update State
-    changelang(state, val) {
-      state.lang = val
-    }
   },
   getters: {
     // ?=====>  get the operation 
@@ -26,11 +23,7 @@ const store = createStore({
   },
   actions: {
     // *=====>  apis and call mutations in this Function
-    changeLanguage(context, data) {
-      context.commit('changelang', 'ja')
-      // console.log(state);
-      console.log(data);
-    }
+
   },
 
 

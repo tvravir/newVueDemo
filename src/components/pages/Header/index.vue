@@ -61,11 +61,17 @@
 							<h4 class="text-white text-xl">
 								Hi, {{ userData.username }}
 							</h4>
-							<select v-model="language" :on-select="changelanguages()">
+							<!-- <select v-model="language" :on-select="changelanguages()">
 								<option value="en">English</option>
 								<option value="ja">japan</option>
-							</select>
-							<button class="px-2 mx-2 text-white" @click="changelanguages('ja')">{{ language }}</button>
+							</select> -->
+							<div class="locale-changer">
+								<select v-model="$i18n.locale" @change="onChange($event)">
+									<option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}
+									</option>
+								</select>
+							</div>
+							<!-- <button class="px-2 mx-2 text-white" @click="changelanguages('ja')">{{ language }}</button> -->
 							<button @click="logoutUser"
 								class="pointer-events-auto rounded-md bg-red-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-red-500 ml-3">
 								logout
@@ -132,8 +138,9 @@ export default {
 			localStorage.removeItem('currentuser');
 			this.$router.push({ path: '/login' });
 		},
-		changelanguages(event) {
-			console.log(event);
+		onChange(event) {
+			console.log(event.target.value);
+			localStorage.setItem('language', event.target.value)
 			// this.changelang('ja')
 			// console.log(event.target.value);
 			// I18n.global.local = 'ja'
