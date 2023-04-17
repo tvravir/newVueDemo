@@ -6,6 +6,7 @@ export default {
   },
   mutations: {
     increment(state, payload) {
+      // ?=====> Declare Function to Update State
       state.counter += payload
     }
   },

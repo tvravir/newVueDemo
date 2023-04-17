@@ -12,7 +12,9 @@ export default {
   },
   mutations: {},
   getters: {
+    // *=====>  get the operation 
     getCompletedTodosCount(state, gatters) {
+      // ?======> use anothet gatters function
       console.log(state);
       return gatters.getCompletedTodos.length;
     },
