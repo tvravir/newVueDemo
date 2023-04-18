@@ -35,8 +35,8 @@
 <script>
 
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { jsPDF } from "jspdf";
-import html2canvas from 'html2canvas'
+// import { jsPDF } from "jspdf";
+// import html2canvas from 'html2canvas'
 export default {
 	name: 'dashboard-page',
 	components: {
@@ -91,26 +91,26 @@ export default {
 		downloadPdf() {
 			console.log('pfd');
 			this.downloadPdfLoader = true
-			window.html2canvas = html2canvas
-			const doc = new jsPDF("p", "px", "a4")
+			// window.html2canvas = html2canvas
+			// const doc = new jsPDF("p", "px", "a4")
 
-			const html = document.getElementById('app');
-			let that = this
-			console.log(html);
-			doc.html(html, {
-				callback: function (doc) {
-					that.downloadPdfLoader = false
-					doc.save("a4.pdf");
-				},
-				// autoPaging: true,
-				x: 10,
-				y: 10,
-				// html2canvas: {
-				// 	removeContainer: true,
-				// 	scale: 0.30,
-				// 	windowWidth: 1920,
-				// }
-			});
+			// const html = document.getElementById('app');
+			// let that = this
+			// console.log(html);
+			// doc.html(html, {
+			// 	callback: function (doc) {
+			// 		that.downloadPdfLoader = false
+			// 		doc.save("a4.pdf");
+			// 	},
+			// 	// autoPaging: true,
+			// 	x: 10,
+			// 	y: 10,
+			// 	// html2canvas: {
+			// 	// 	removeContainer: true,
+			// 	// 	scale: 0.30,
+			// 	// 	windowWidth: 1920,
+			// 	// }
+			// });
 
 		},
 		// incrementData() {

@@ -10,7 +10,7 @@ const store = createStore({
   state() {
     // ?=====> Declare Variable
     return {
-
+      userList: []
     }
   },
   mutations: {
