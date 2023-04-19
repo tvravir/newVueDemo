@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="w-full flex justify-between items-center">
+    <p> Showing {{ currentPage }} / {{ Math.ceil(totalPages) }} </p>
     <ul class="pagination">
       <li class="pagination-item">
         <button type="button" @click="onClickPreviousPage" :disabled="isInFirstPage"
@@ -26,6 +27,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'pagination-component',
   props: {
@@ -54,6 +56,7 @@ export default {
         return 1;
       }
 
+
       // When on the last page
       // if (this.currentPage === this.totalPages) {
       //   return this.totalPages - this.maxVisibleButtons;
@@ -72,16 +75,21 @@ export default {
         startpageLoop = this.startPage
 
       }
+      // console.log(this.totalPages);
+      // console.log(startpageLoop);
       const range = [];
       for (
         let i = startpageLoop;
         i <= Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages);
         i++
       ) {
-        range.push({
-          name: i,
-          isDisabled: i === this.currentPage
-        });
+
+        if (i > 0) {
+          range.push({
+            name: Math.ceil(i),
+            isDisabled: i === this.currentPage
+          });
+        }
       }
       // console.log(range);
       return range;

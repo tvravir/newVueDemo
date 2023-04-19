@@ -8,7 +8,7 @@ import productDetail from './components/pages/Product-detail';
 import Login from './components/pages/auth/Login';
 import Register from './components/pages/auth/Register';
 import Calendar from './components/pages/Calendar'
-
+import UserList from '@/components/pages/user-list/index.vue'
 
 function guardMyroute(to, from, next) {
   var isAuthenticated = false;
@@ -59,6 +59,11 @@ const router = createRouter({
         path: '/calendar',
         name: 'calendar',
         component: Calendar,
+      },
+      {
+        path: '/user-list',
+        name: 'userList',
+        component: UserList,
       },
     ]
 

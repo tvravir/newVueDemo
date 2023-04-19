@@ -184,13 +184,13 @@ export default {
         html2canvas: {
           scale: 1,
           useCORS: true,
-          windowWidth: 800,
+          // windowWidth: 800,
           allowTaint: true
         },
         jsPDF: {
           unit: 'in',
-          // format: 'a4',
-          format: 'letter',
+          format: 'a3',
+          // format: 'letter',
           orientation: 'portrait',
           putOnlyUsedFonts: true,
           align: 'center',

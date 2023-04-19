@@ -13,6 +13,9 @@ import axios from 'axios'
 import Vue3Html2pdf from 'vue3-html2pdf'
 axios.defaults.baseURL = 'https://dummyjson.com/';
 axios.defaults.headers.common['Content-Type'] = 'application/json'
+// import { createVfm } from 'vue-final-modal'
+// const vfm = createVfm()
+// import 'vue-final-modal/style.css'
 
 // const store = createAppStore
 
@@ -24,4 +27,5 @@ app.use(Vue3Html2pdf)
 app.use(helper)
 app.use(VueEasyLightbox)
 app.use(vfmPlugin)
+// app.use(vfm)
 app.mount('#app')
