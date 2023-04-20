@@ -1,37 +1,70 @@
 <template>
-	<div>
-		<div class="flex items-center justify-between mb-3">
-			<div>
-				<select name="cars" id="cars" v-model.trim="dataPerPage">
-					<option :value="page" v-for="page in pagesOption" :key="page">{{ page }}</option>
-				</select>
-			</div>
-			<div class="ml-auto">
-				<input type="search" v-model.trim="search"
-					class="focus:outline-none border rounded-md  h-10 px-2 text-[0.8125rem]" v-if="tableSettings.searchable == true"
-					id="search" placeholder="Search">
-			</div>
-		</div>
-		<!-- {{ allData }} -->
-		<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-			<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b">
-					<tr>
-						<th scope="col" class="px-6 py-3" v-for="(cols, index) in fields" :key="index">
-							{{ cols.title }}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<template v-if="allData && allData.length > 0">
-						<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" v-for="(list) in allData" :key="list.id">
-							<td class="px-6 py-4" v-for="(subList, ind) in list.fieldList" :key="subList.title + ind">
-								<h2 :class="[subList.classes, subList.clickable == true && 'cursor-pointer']"
-									@click="clickedKey(subList)">
-									<label v-html="subList.data"> </label>
-								</h2>
-							</td>
-							<!-- <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <div v-if="showPagination == true">
+        <select
+          name="dataPerPage"
+          id="dataPerPage"
+          v-model.trim="dataPerPage"
+          class="pt-1 pb-1 pr-[1.7rem] rounded"
+        >
+          <option :value="page" v-for="page in totalPerPageList" :key="page">
+            {{ page }}
+          </option>
+        </select>
+      </div>
+
+      <div class="ml-auto">
+        <input
+          type="search"
+          v-model.trim="search"
+          class="focus:outline-none border rounded-md h-10 px-2 text-[0.8125rem]"
+          v-if="searchable == true"
+          id="search"
+          placeholder="Search"
+        />
+      </div>
+    </div>
+    <!-- {{ allData }} -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead
+          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b"
+        >
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3"
+              v-for="(cols, index) in fields"
+              :key="index"
+            >
+              {{ cols.title }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-if="allData && allData.length > 0 && !$slots.tableBody">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              v-for="list in allData"
+              :key="list.id"
+            >
+              <td
+                class="px-6 py-4"
+                v-for="(subList, ind) in list.fieldList"
+                :key="subList.title + ind"
+              >
+                <h2
+                  :class="[
+                    subList.classes,
+                    subList.clickable == true && 'cursor-pointer',
+                  ]"
+                  @click="clickedKey(subList)"
+                >
+                  <label v-html="subList.data"> </label>
+                </h2>
+              </td>
+              <!-- <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
 									<h2 class="font-bold text-sm leading-none  text-black">
 										{{ index + 1 }}
 									</h2>
@@ -51,7 +84,7 @@
 
 								</td> -->
 
-							<!-- <td class="px-6 py-4">
+              <!-- <td class="px-6 py-4">
 									<h2 class=" text-sm leading-none text-black">
 										{{ list.gender }}
 									</h2>
@@ -67,157 +100,268 @@
 									<a href="javascript:void(0)" @click="openEdit(listData)"
 										class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
 								</td> -->
-						</tr>
-					</template>
-					<template v-if="allData && allData.length == 0">
-						<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 h-64 relative">
-							<p class="absolute w-full h-full flex items-center justify-center">
-								No Data Available
-							</p>
-						</tr>
-					</template>
-				</tbody>
-			</table>
-		</div>
-		<div class="mt-4">
-			<Pagination :totalPages="Math.ceil(totalPages)" :perPage="dataPerPage" :currentPage="page"
-				@pagechanged="onPageChange($event, search)" />
-		</div>
-	</div>
-	<!-- {{ test }} -->
+            </tr>
+          </template>
+          <template v-if="allData && allData.length == 0 && !$slots.tableBody">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 h-64 relative"
+            >
+              <p
+                class="absolute w-full h-full flex items-center justify-center"
+              >
+                No Data Available
+              </p>
+            </tr>
+          </template>
+          <template v-if="$slots.tableBody">
+            <slot name="tableBody" />
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-4" v-if="showPagination == true">
+      <Pagination
+        :totalPages="totalPages"
+        :perPage="dataPerPage"
+        :currentPage="page"
+        @pagechanged="onPageChange($event, search)"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
 // import axios from 'axios'
 // import userDetailModal from '../modal/userDetailModal.vue'
-import Pagination from '@/components/pages/common/pagination'
-
+import Pagination from "@/components/pages/common/pagination";
 
 export default {
-	name: 'table-page',
-	components: {
-		Pagination
-	},
-	props: {
-		fields: {
-			type: Array,
-			required: true,
-			default() { return [] },
-		},
-		listData: {
-			type: Array,
-			required: true,
-			default() { return [] },
-		},
-		tableSettings: {
-			default() {
-				return {
-					searchable: true
-				}
-			}
-		}
-	},
-	data() {
-		return {
-			fload: true,
-			allUsersResp: '',
-			search: '',
-			allData: [],
-			startInterVal: '',
-			test: '1234',
-			page: 1,
-			dataPerPage: 10,
-			totalPages: 1,
-			pagesOption: [10, 25, 50, 100]
+  name: "table-page",
+  components: {
+    Pagination,
+  },
+  setup(props, { slots }) {
+    const hasSlot = (name) => !!slots[name];
+    return { hasSlot };
+  },
+  props: {
+    // ? Header Fields
+    fields: {
+      type: Array,
+      required: true,
+      default() {
+        return [];
+      },
+    },
+    listData: {
+      type: Array,
+      required: true,
+      default() {
+        return [];
+      },
+    },
+    searchable: {
+      type: Boolean,
+      default() {
+        return true;
+      },
+    },
+    showPagination: {
+      type: Boolean,
+      default() {
+        return true;
+      },
+    },
+    HTTPBased: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
+    totalPerPage: {
+      type: Number,
+      default() {
+        return 10;
+      },
+    },
+    totalPerPageList: {
+      type: Array,
+      default() {
+        return [10, 25, 50, 100];
+      },
+    },
+    totalRecords: {
+      type: Number,
+      default() {
+        return 0;
+      },
+    },
+    searchFields: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  data() {
+    return {
+      fload: true,
+      allUsersResp: this.listData,
+      search: "",
+      allData: this.listData.slice(0, this.totalPerPage),
+      startInterVal: "",
+      page: 1,
+      dataPerPage: this.totalPerPage,
+      totalPages: Math.ceil(this.totalRecords / this.totalPerPage),
+      // totalPages: 0,
+    };
+  },
 
-		}
-	},
+  mounted() {
+    // this.getAllUsers()
+  },
+  computed: {
+    getTableTotalRecords() {
+      // console.log(this.tableSettings);
+      if (this.totalRecords) {
+        return this.totalRecords;
+      } else {
+        return false;
+      }
+    },
+  },
+  watch: {
+    search(newval) {
+      if (this.HTTPBased == true || this.$slots.tableBody) {
+        this.$emit("searchValue", newval);
+      } else {
+        this.searchFilter(newval);
+      }
+      // this.onPageChange(this.page, newval)
+    },
+    // eslint-disable-next-line no-unused-vars
+    listData(newVal, oldVal) {
+      this.allData = newVal;
+      this.allUsersResp = newVal;
+      this.getPageData(this.allData, this.page);
+      // this.onPageChange(this.page)
+    },
+    dataPerPage(newVal) {
+      // console.log(newVal);
+      if (this.HTTPBased == true || this.$slots.tableBody) {
+        this.$emit("itemsPerPage", newVal);
+      }
 
-	mounted() {
-		// this.getAllUsers()
+      this.onPageChange(1, this.search);
+    },
+  },
+  emits: ["clicked", "activePage", "itemsPerPage", "searchValue"],
 
-	},
-	computed: {
-	},
-	watch: {
-		search(newval) {
-			// this.searchFilter(newval)
-			this.onPageChange(this.page, newval)
-		},
-		listData(newVal, oldVal) {
-			console.log('list data old Value', oldVal);
-			console.log('list data new Value', newVal);
-			this.allData = newVal
-			this.allUsersResp = newVal
-			this.onPageChange(this.page)
-		},
-		test() {
-			console.log(this.test);
-		},
-		dataPerPage(newVal) {
-			console.log(newVal);
-			// this.totalPages
-			this.onPageChange(1, this.search)
-		}
-	},
-	emits: ['clicked', 'activePage'],
-	methods: {
-		clickedKey(data) {
-			// console.log(data);
-			if (data.clickable == true) {
-				this.$emit('clicked', data)
-			}
-		},
-		testClick() {
-			this.test = Math.round(+new Date() / 1000);
-		},
-		async searchFilter(newval) {
-			clearInterval(this.startInterVal)
-			if (newval != '') {
-				// this.startInterVal = setInterval(() => {
-				// console.log('inside Search Filter -------------');
-				newval = newval.toLowerCase()
-				this.allData = this.allUsersResp.filter((e) => {
-					if (e.firstName.toLowerCase().includes(newval) || e.lastName.toLowerCase().includes(newval) || e.maidenName.toLowerCase().includes(newval) || e.email.toLowerCase().includes(newval) || e.username.toLowerCase().includes(newval)) {
-						return e
-					}
-				})
-				// console.log('all Data Lenth', this.allData.length);
-				clearInterval(this.startInterVal)
-				// }, 10);
-			} else {
-				this.allData = this.allUsersResp
-				clearInterval(this.startInterVal)
-			}
-		},
-		async onPageChange(event, searchVal = '') {
-			this.page = event
-			if (searchVal != '') {
-				// console.log("currentPage", event);
-				// console.log("inside search Val", searchVal);
-				await this.searchFilter(searchVal)
+  methods: {
+    clickedKey(data) {
+      // console.log(data);
+      if (data.clickable == true) {
+        this.$emit("clicked", data);
+      }
+    },
 
+    async searchFilter(newval) {
+      clearInterval(this.startInterVal);
+      if (newval != "" && this.allUsersResp.length > 0) {
+        // this.startInterVal = setInterval(() => {
+        newval = newval.toLowerCase();
+        this.allData = this.allUsersResp.filter((e) => {
+          for (const property in e) {
+            // console.log(e[property]);
 
-				this.getPageData(this.allData, event)
-			} else {
-				this.getPageData(this.allUsersResp, event)
-			}
-			this.$emit('activePage', event)
-		},
-		getPageData(filterArr, count) {
-			this.totalPages = Math.ceil(filterArr.length / this.dataPerPage)
-			let startInd = ((count - 1) * this.dataPerPage)
-			let endInd = startInd + this.dataPerPage
-			// console.log('total Page', this.totalPages);
-			// console.log('Start Index', startInd);
-			// console.log('Ending index', endInd);
+            if (
+              typeof e[property] == "string" &&
+              this.searchFields.length == 0 &&
+              e[property].toLowerCase().includes(newval)
+            ) {
+              return e;
+            }
 
-			this.allData = filterArr.slice(startInd, endInd)
-			// console.log('All Data', this.allData);
-		}
-	},
+            if (
+              typeof e[property] == "string" &&
+              this.searchFields.length > 0 &&
+              this.searchFields.includes(property) &&
+              e[property].toLowerCase().includes(newval)
+            ) {
+              // console.log(this.searchFields);
+              return e;
+            }
+          }
 
-}
+          // if (
+          //   e.firstName.toLowerCase().includes(newval) ||
+          //   e.lastName.toLowerCase().includes(newval) ||
+          //   e.maidenName.toLowerCase().includes(newval) ||
+          //   e.email.toLowerCase().includes(newval) ||
+          //   e.username.toLowerCase().includes(newval)
+          // ) {
+          //   return e;
+          // }
+        });
+        this.getPageData(this.allData, this.page);
+        clearInterval(this.startInterVal);
+        // }, 1000);
+      } else {
+        this.allData = this.allUsersResp;
+        this.getPageData(this.allData, this.page);
+        clearInterval(this.startInterVal);
+      }
+    },
+
+    async onPageChange(event, searchVal = "") {
+      this.page = event;
+      if (searchVal != "") {
+        this.searchFilter(searchVal);
+        this.getPageData(this.allData, event);
+      } else {
+        this.getPageData(this.allUsersResp, event);
+      }
+      if (this.HTTPBased == true || this.$slots.tableBody) {
+        this.$emit("activePage", event);
+      }
+    },
+
+    getPageData(filterArr, count) {
+      if (filterArr.length == 0) {
+        if (this.page != 1) {
+          if (this.HTTPBased == true) {
+            this.$emit("activePage", 1);
+          }
+        }
+        this.page = 1;
+      }
+      // console.log(this.getTableTotalRecords);
+
+      if (this.HTTPBased == false) {
+        this.totalPages = Math.ceil(filterArr.length / this.dataPerPage);
+      } else {
+        if (this.search == "") {
+          this.totalPages = Math.ceil(
+            (this.getTableTotalRecords
+              ? this.getTableTotalRecords
+              : filterArr.length) / this.dataPerPage
+          );
+        } else {
+          this.totalPages = Math.ceil(filterArr.length / this.dataPerPage);
+        }
+      }
+
+      // console.log("this.TotalPages", this.totalPages);
+      // if (this.HTTPBased == false && this.showPagination == true) {
+      if (this.showPagination == true) {
+        let startInd = (count - 1) * this.dataPerPage;
+        let endInd = startInd + this.dataPerPage;
+        this.allData = filterArr.slice(startInd, endInd);
+      }
+      // console.log('All Data', this.allData);
+    },
+  },
+};
 </script>
 
 <style scoped></style>

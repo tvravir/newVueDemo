@@ -98,7 +98,7 @@ export default {
       return this.currentPage === 1;
     },
     isInLastPage() {
-      return this.currentPage === this.totalPages;
+      return this.currentPage === this.totalPages || this.totalPages === 0;
     },
 
   },
